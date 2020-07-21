@@ -12,29 +12,59 @@ import {
   View,
   Text,
   Button,
+  TextInput,
 } from 'react-native';
 
+ let id = 0;
+
 const Todo = (props) =>(
-  <View>
+  <View style={{flexDirection: "row", alignItems: "center", justifyContent: "center"}}>
     <Text>{props.text}</Text>
-    <Button title = "Delete" />
+    <Button title = "Delete" onPress={props.deleteTodo} />
   </View>
 )
 
 class App extends React.Component {
-  constructor(){
-    super()
+  constructor(props){
+    super(props)
     this.state={
-      todos: [{text: 'text 1'},{text: 'text 1'},{text: 'text 1'},],
+      todos: [],
     }
+  }
+
+  // handelInput =(text) =>{
+  //   this.setState({
+  //     todos:{
+  //       id: id++,
+  //       text: text,
+  //     }
+  //   })
+  // }
+
+  addTodo(){
+    id++;
+    const text = `Todo number ${id}`
+    this.setState({
+      todos:[...this.state.todos, {id: id, text: text},],
+    })
+  }
+
+  deleteTodo(id){
+    this.setState({
+      todos: this.state.todos.filter(x => x.id !== id)
+    })
   }
   render(){
     return (
       <>
-      <View>
-      <Text> Todo App React Native </Text>
-      {this.state.todos.map( todo => <Todo text={todo.text} />)}
-      </View>
+      <ScrollView>
+        <Text> Todo App React Native </Text>
+        
+        <Button title="Add todo" onPress={() => this.addTodo()} />
+
+        {this.state.todos.map( (todo) => <Todo key={todo.id} text={todo.text} deleteTodo={() =>this.deleteTodo(todo.id)} />)}
+
+      </ScrollView>
     
       </>
     );
